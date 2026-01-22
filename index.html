@@ -6,128 +6,83 @@
     <title>瑞祥口語錄音系統</title>
     <style>
         :root { --bg: #F0FFF0; --primary: #FFB100; --secondary: #2192FF; --danger: #EF4444; --text: #1F2937; }
-        body { font-family: 'Microsoft JhengHei', sans-serif; background-color: var(--bg); margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; min-height: -webkit-fill-available; overflow: hidden; }
-        html { height: -webkit-fill-available; }
-        .container { width: 92%; max-width: 400px; display: flex; flex-direction: column; padding: 12px 15px; box-sizing: border-box; background: white; border-radius: 25px; border: 4px solid var(--text); box-shadow: 0 8px 0px #D1D5DB; margin: auto; }
-        .header-box { background: var(--primary); padding: 8px 0; border-radius: 12px; border: 3px solid var(--text); margin-bottom: 8px; }
-        h1 { font-size: 18px; color: var(--text); margin: 0; text-align: center; white-space: nowrap; }
+        body { font-family: 'Microsoft JhengHei', sans-serif; background-color: var(--bg); margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; }
+        .container { width: 92%; max-width: 400px; padding: 15px; background: white; border-radius: 25px; border: 4px solid var(--text); box-shadow: 0 8px 0px #D1D5DB; margin: auto; }
+        .header-box { background: var(--primary); padding: 8px 0; border-radius: 12px; border: 3px solid var(--text); margin-bottom: 8px; text-align: center; }
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-        .mode-btn { background: #F3F4F6; border: 3px solid var(--text); border-radius: 10px; padding: 10px 0; font-size: 18px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 0 var(--text); transition: 0.1s; text-align: center; }
-        .mode-btn.active { background: var(--secondary); color: white; transform: translateY(2px); box-shadow: 0 2px 0 var(--text); }
-        .mode-btn span { font-size: 11px; display: block; font-weight: normal; }
-        .timer-box { flex: 1; display: flex; align-items: center; justify-content: center; min-height: 80px; }
-        #clock { font-size: 85px; font-weight: 900; color: var(--text); font-family: 'Arial', sans-serif; letter-spacing: -3px; }
-        .action-area { display: flex; flex-direction: column; align-items: center; padding-bottom: 5px; }
-        #recordBtn { width: 125px; height: 125px; border-radius: 50%; border: 6px solid var(--text); background: var(--danger); color: white; font-size: 24px; font-weight: 900; cursor: pointer; box-shadow: 0 8px 0 #991B1B; transition: 0.2s; }
-        #recordBtn:disabled { background: #D1D5DB; box-shadow: 0 4px 0 #9CA3AF; opacity: 0.6; }
-        #recordBtn.recording { animation: pulse 1s infinite; background: #FF0000; box-shadow: none; border-color: #fff; }
-        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
-        #status { margin-top: 8px; font-size: 15px; color: var(--secondary); font-weight: bold; text-align: center; min-height: 22px; }
+        .mode-btn { background: #F3F4F6; border: 3px solid var(--text); border-radius: 10px; padding: 10px 0; font-size: 18px; font-weight: bold; cursor: pointer; }
+        .mode-btn.active { background: var(--secondary); color: white; }
+        .timer-box { font-size: 80px; font-weight: 900; text-align: center; margin: 10px 0; }
+        .action-area { text-align: center; }
+        #recordBtn { width: 120px; height: 120px; border-radius: 50%; border: 6px solid var(--text); background: #D1D5DB; color: white; font-size: 24px; font-weight: 900; cursor: pointer; }
+        #recordBtn.ready { background: var(--danger); box-shadow: 0 8px 0 #991B1B; }
+        #recordBtn.recording { animation: pulse 1s infinite; background: #FF0000; box-shadow: none; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        #status { margin-top: 10px; font-weight: bold; color: var(--secondary); }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header-box"><h1>瑞祥國小模擬錄音 🎤</h1></div>
+        <div class="header-box"><h1>瑞祥國小模擬錄音</h1></div>
         <div class="grid">
-            <button class="mode-btn" onclick="prep(30, this, '一、發音朗讀')">一、發音朗讀<span>30s</span></button>
-            <button class="mode-btn" onclick="prep(60, this, '二、看圖講話')">二、看圖講話<span>60s</span></button>
-            <button class="mode-btn" onclick="prep(60, this, '三、看月誌')">三、看月誌<span>60s</span></button>
-            <button class="mode-btn" onclick="prep(60, this, '四、口語表達')">四、口語表達<span>60s</span></button>
+            <button class="mode-btn" onclick="prep(30, this, '一、發音朗讀')">一、發音朗讀</button>
+            <button class="mode-btn" onclick="prep(60, this, '二、看圖講話')">二、看圖講話</button>
+            <button class="mode-btn" onclick="prep(60, this, '三、看月誌')">三、看月誌</button>
+            <button class="mode-btn" onclick="prep(60, this, '四、口語表達')">四、口語表達</button>
         </div>
-        <div class="timer-box"><div id="clock">00:00</div></div>
+        <div class="timer-box" id="clock">00:00</div>
         <div class="action-area">
             <button id="recordBtn" onclick="run()" disabled>START</button>
             <div id="status">請先選取測驗項目</div>
         </div>
     </div>
-
     <script>
         const UPLOAD_URL = "https://script.google.com/macros/s/AKfycbxG2kE_6UAv_mjZyLkPACmzwhy9nL0znmS6xZOkZttdzTVTJ2iYsUafZsIFFRw3O1kd/exec";
         let audioCtx, recorder, chunks = [], limit = 0, timer, cat = "";
 
-        function makeBeep(times) {
-            if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
-            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            const now = audioCtx.currentTime;
-            for (let i = 0; i < times; i++) {
-                const start = now + (i * 0.5);
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.type = 'sine'; osc.frequency.setValueAtTime(800, start);
-                gain.gain.setValueAtTime(0, start);
-                gain.gain.linearRampToValueAtTime(0.5, start + 0.05);
-                gain.gain.exponentialRampToValueAtTime(0.01, start + 0.4);
-                osc.connect(gain); gain.connect(audioCtx.destination);
-                osc.start(start); osc.stop(start + 0.5);
-            }
-        }
-
         function prep(s, btn, name) {
-            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            if (audioCtx.state === 'suspended') audioCtx.resume();
             limit = s; cat = name;
             document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            btn.disabled = false;
-            btn.innerText = "START";
-            document.getElementById('status').innerText = "已選定：" + name.substring(2);
-            draw(s);
-        }
-
-        function draw(s) {
-            let m = Math.floor(s/60), sec = s%60;
-            document.getElementById('clock').innerText = `${m.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`;
+            const rBtn = document.getElementById('recordBtn');
+            rBtn.disabled = false;
+            rBtn.classList.add('ready'); // 強制變紅色
+            document.getElementById('status').innerText = "已選定：" + name;
+            document.getElementById('clock').innerText = (s == 30 ? "00:30" : "01:00");
         }
 
         async function run() {
-            try {
-                if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                recorder = new MediaRecorder(stream);
-                chunks = [];
-                recorder.ondataavailable = e => chunks.push(e.data);
-                
-                recorder.onstop = async () => {
-                    document.getElementById('status').innerText = "⏳ 正在傳送檔案...";
-                    const blob = new Blob(chunks, { type: 'audio/wav' });
-                    const reader = new FileReader();
-                    reader.readAsDataURL(blob);
-                    reader.onloadend = async () => {
-                        const base64data = reader.result.split(',')[1];
-                        const formData = new URLSearchParams();
-                        formData.append('data', base64data);
-                        formData.append('filename', `[${cat}]_${new Date().getTime()}.wav`);
-                        formData.append('mimetype', 'audio/wav');
-                        try {
-                            await fetch(UPLOAD_URL, { method: 'POST', body: formData, mode: 'no-cors' });
-                            document.getElementById('status').innerText = "✅ 傳送成功！測驗結束。";
-                            alert("錄音已成功傳送到老師的雲端資料夾。");
-                        } catch (err) {
-                            document.getElementById('status').innerText = "❌ 傳送失敗。";
-                        }
-                    };
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            recorder = new MediaRecorder(stream);
+            recorder.ondataavailable = e => chunks.push(e.data);
+            recorder.onstop = async () => {
+                document.getElementById('status').innerText = "⏳ 傳送中...";
+                const blob = new Blob(chunks, { type: 'audio/wav' });
+                const reader = new FileReader();
+                reader.readAsDataURL(blob);
+                reader.onloadend = async () => {
+                    const formData = new URLSearchParams();
+                    formData.append('data', reader.result.split(',')[1]);
+                    formData.append('filename', `[${cat}]_${new Date().getTime()}.wav`);
+                    await fetch(UPLOAD_URL, { method: 'POST', body: formData, mode: 'no-cors' });
+                    document.getElementById('status').innerText = "✅ 傳送成功！";
+                    alert("錄音已存入資料夾。");
                 };
-
-                recorder.start();
-                let left = limit;
-                const btn = document.getElementById('recordBtn');
-                btn.disabled = true; 
-                btn.classList.add('recording');
-                document.getElementById('status').innerText = "🔴 錄音中...";
-                
-                timer = setInterval(() => {
-                    left--; draw(left);
-                    if (left === 10) makeBeep(1);
-                    if (left <= 0) {
-                        clearInterval(timer); 
-                        recorder.stop();
-                        stream.getTracks().forEach(track => track.stop()); 
-                        btn.disabled = true; 
-                        btn.classList.remove('recording');
-                        btn.innerText = "測驗結束";
-                    }
-                }, 1000);
-            } catch (e) { alert("請授權麥克風！"); }
+            };
+            recorder.start();
+            let left = limit;
+            const btn = document.getElementById('recordBtn');
+            btn.disabled = true; btn.classList.add('recording');
+            timer = setInterval(() => {
+                left--;
+                let m = Math.floor(left/60), s = left%60;
+                document.getElementById('clock').innerText = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+                if (left <= 0) {
+                    clearInterval(timer); recorder.stop();
+                    stream.getTracks().forEach(t => t.stop());
+                    btn.classList.remove('recording'); btn.innerText = "結束";
+                }
+            }, 1000);
         }
     </script>
 </body>
