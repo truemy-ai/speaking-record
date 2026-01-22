@@ -42,7 +42,6 @@
     </div>
 
     <script>
-        // 這是您的 Google Apps Script 收信口網址
         const UPLOAD_URL = "https://script.google.com/macros/s/AKfycbxG2kE_6UAv_mjZyLkPACmzwhy9nL0znmS6xZOkZttdzTVTJ2iYsUafZsIFFRw3O1kd/exec";
         let audioCtx, recorder, chunks = [], limit = 0, timer, cat = "";
 
@@ -69,8 +68,8 @@
             limit = s; cat = name;
             document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            document.getElementById('recordBtn').disabled = false;
-            document.getElementById('recordBtn').innerText = "START";
+            btn.disabled = false;
+            btn.innerText = "START";
             document.getElementById('status').innerText = "已選定：" + name.substring(2);
             draw(s);
         }
@@ -89,7 +88,7 @@
                 recorder.ondataavailable = e => chunks.push(e.data);
                 
                 recorder.onstop = async () => {
-                    document.getElementById('status').innerText = "⏳ 正在自動上傳至雲端...";
+                    document.getElementById('status').innerText = "⏳ 正在傳送檔案...";
                     const blob = new Blob(chunks, { type: 'audio/wav' });
                     const reader = new FileReader();
                     reader.readAsDataURL(blob);
@@ -99,13 +98,12 @@
                         formData.append('data', base64data);
                         formData.append('filename', `[${cat}]_${new Date().getTime()}.wav`);
                         formData.append('mimetype', 'audio/wav');
-
                         try {
                             await fetch(UPLOAD_URL, { method: 'POST', body: formData, mode: 'no-cors' });
-                            document.getElementById('status').innerText = "✅ 上傳成功！請關閉網頁。";
-                            alert("測驗完成！錄音已自動存入老師的資料夾。");
+                            document.getElementById('status').innerText = "✅ 傳送成功！測驗結束。";
+                            alert("錄音已成功傳送到老師的雲端資料夾。");
                         } catch (err) {
-                            document.getElementById('status').innerText = "❌ 上傳失敗，請聯繫老師。";
+                            document.getElementById('status').innerText = "❌ 傳送失敗。";
                         }
                     };
                 };
@@ -113,19 +111,23 @@
                 recorder.start();
                 let left = limit;
                 const btn = document.getElementById('recordBtn');
-                btn.disabled = true; btn.classList.add('recording');
-                document.getElementById('status').innerText = "🔴 正在錄音...";
+                btn.disabled = true; 
+                btn.classList.add('recording');
+                document.getElementById('status').innerText = "🔴 錄音中...";
                 
                 timer = setInterval(() => {
                     left--; draw(left);
                     if (left === 10) makeBeep(1);
                     if (left <= 0) {
-                        clearInterval(timer); recorder.stop();
-                        btn.disabled = false; btn.classList.remove('recording');
-                        btn.innerText = "完成";
+                        clearInterval(timer); 
+                        recorder.stop();
+                        stream.getTracks().forEach(track => track.stop()); 
+                        btn.disabled = true; 
+                        btn.classList.remove('recording');
+                        btn.innerText = "測驗結束";
                     }
                 }, 1000);
-            } catch (e) { alert("請授權麥克風權限！"); }
+            } catch (e) { alert("請授權麥克風！"); }
         }
     </script>
 </body>
